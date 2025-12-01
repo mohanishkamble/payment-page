@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Payment Verification</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+      background: #0d0d0d;
+      color: #e0e0e0;
+    }
+
+    /* Neon Animated Border */
+    .neon-box {
+      position: relative;
+      padding: 28px;
+      border-radius: 14px;
+      max-width: 450px;
+      margin: auto;
+      background: #1a1a1a;
+      overflow: hidden;
+    }
+
+    .neon-box::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(
+        120deg,
+        #00e6b3,
+        #00aaff,
+        #00ffcc,
+        #0099ff,
+        #00e6b3
+      );
+      background-size: 400% 400%;
+      z-index: -1;
+      border-radius: 16px;
+      animation: neonGlow 6s linear infinite;
+      filter: blur(6px);
+    }
+
+    @keyframes neonGlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Drag & Drop Upload Box */
+    #dropZone {
+      border: 2px dashed #00ccff;
+      border-radius: 12px;
+      padding: 25px;
+      color: #88dfff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    #dropZone.dragover {
+      background: rgba(0, 180, 255, 0.1);
+      border-color: #00e6b3;
+      color: #00e6b3;
+    }
+
+    #proceedBtn, #payBtn {
+      padding: 14px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 12px;
+      width: 100%;
+      transition: 0.2s ease-in-out;
+    }
+
+    #payBtn {
+      background: #00cc99;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(0,255,180,0.4);
+    }
+
+    #payBtn:hover {
+      background: #00e6b3;
+      box-shadow: 0 0 12px rgba(0,255,200,0.7);
+    }
+
+    #proceedBtn {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    #proceedBtn.enabled {
+      background: #00ccff;
+      color: #000;
+      opacity: 1;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,180,255,0.6);
+      font-weight: bold;
+    }
+
+    img {
+      border-radius: 12px;
+      border: 2px solid #333;
+      box-shadow: 0 0 12px rgba(0,255,200,0.1);
+    }
+
+    /* Hide actual file input */
+    #paymentProof {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="neon-box">
+
+    <h2 style="color:#00e6b3;">Pay ₹500 to Proceed</h2>
+
+    <img src="your-qr.png" width="260"><br><br>
+
+    <p><strong>UPI ID:</strong> sachinmorye18@okicici</p>
+    <p><strong>Amount:</strong> ₹500</p>
+
+    <!-- Pay Button -->
+    <a href="upi://pay?pa=sachinmorye18@okicici&pn=Payment&am=500&cu=INR">
+      <button id="payBtn">Pay via GPay / PhonePe / UPI</button>
+    </a>
+
+    <br><br>
+
+    <h3 style="color:#00ccff;">Upload payment screenshot</h3>
+
+    <!-- Drag & Drop Zone -->
+    <div id="dropZone">Drop image here or click to upload</div>
+    <input type="file" id="paymentProof" accept="image/*">
+
+    <button id="proceedBtn" disabled>Proceed to Form</button>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("paymentProof");
+    const proceedBtn = document.getElementById("proceedBtn");
+
+    // Click opens file chooser
+    dropZone.addEventListener("click", () => fileInput.click());
+
+    // File selected manually
+    fileInput.addEventListener("change", handleFile);
+
+    // Drag Over
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+
+    // Drag Leave
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.classList.remove("dragover");
+    });
+
+    // Drop file
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("dragover");
+
+      if (e.dataTransfer.files.length > 0) {
+        fileInput.files = e.dataTransfer.files;
+        handleFile();
+      }
+    });
+
+    function handleFile() {
+      if (fileInput.files.length > 0) {
+        dropZone.innerHTML = "Screenshot Uploaded ✔";
+        dropZone.style.borderColor = "#00e6b3";
+        dropZone.style.color = "#00e6b3";
+
+        proceedBtn.disabled = false;
+        proceedBtn.classList.add("enabled");
+      }
+    }
+
+    proceedBtn.addEventListener("click", () => {
+      if (!proceedBtn.disabled) {
+        window.location.href = "https://forms.gle/CW1vomMLGDHm2Ej18";
+      }
+    });
+  </script>
+
+</body>
+</html>
